@@ -18,7 +18,7 @@ function fetch(filePath)
     print('get', sourcePath)
 
     local req = http.get(sourcePath)
-    if ~req then
+    if not req then
         return false
     end
 
@@ -40,7 +40,7 @@ local lines = split(req.readAll(), '\n')
 
 for i = 1, #lines do
     local suc = fetch(lines[i])
-    if ~suc then
+    if not suc then
         print('failed to get ' .. lines[i])
     end
     local f = fs.open(TARGET_DIR .. '/' .. lines[i], 'r')
