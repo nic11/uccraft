@@ -18,6 +18,10 @@ function fetch(filePath)
     print('get', sourcePath)
 
     local req = http.get(sourcePath)
+    if ~req then
+        return false
+    end
+
     local data = req.readAll()
 
     local targetPath = TARGET_DIR .. '/' .. filePath
@@ -27,13 +31,18 @@ function fetch(filePath)
     local f = fs.open(targetPath, 'w')
     f.write(data)
     f.close()
+
+    return true
 end
 
 local req = http.get(BASE_URL .. '/clone-list')
 local lines = split(req.readAll(), '\n')
 
 for i = 1, #lines do
-    fetch(lines[i])
+    local suc = fetch(lines[i])
+    if ~suc then
+        print('failed to get ' .. lines[i])
+    end
     local f = fs.open(TARGET_DIR .. '/' .. lines[i], 'r')
     print(f.readAll())
     f.close()
